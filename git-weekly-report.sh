@@ -14,32 +14,33 @@ show_usage() {
 days_ago=7
 output_file="git_weekly_report.txt"
 
-# Parse command line arguments using getopt
-TEMP=$(getopt -o d:o:h --long days:,output:,help -n 'git-weekly-report' -- "$@")
-if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
-
-eval set -- "$TEMP"
-
-while true; do
-    case "$1" in
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
         -d|--days)
-            days_ago="$2"
-            shift 2
+            if [[ -n "$2" ]] && [[ "$2" =~ ^[0-9]+$ ]]; then
+                days_ago="$2"
+                shift 2
+            else
+                echo "Error: Days argument requires a number"
+                show_usage
+            fi
             ;;
         -o|--output)
-            output_file="$2"
-            shift 2
+            if [[ -n "$2" ]]; then
+                output_file="$2"
+                shift 2
+            else
+                echo "Error: Output argument requires a filename"
+                show_usage
+            fi
             ;;
         -h|--help)
             show_usage
             ;;
-        --)
-            shift
-            break
-            ;;
         *)
-            echo "Internal error!"
-            exit 1
+            echo "Unknown option: $1"
+            show_usage
             ;;
     esac
 done
