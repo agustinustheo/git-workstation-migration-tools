@@ -2,28 +2,28 @@
 
 # Function to show usage
 show_usage() {
-    echo "Usage: $0 [-w|--weeks WEEKS_AGO] [-o|--output OUTPUT_FILE]"
+    echo "Usage: $0 [-d|--days DAYS_AGO] [-o|--output OUTPUT_FILE]"
     echo "Options:"
-    echo "  -w, --weeks    Number of weeks ago to start from (default: 1)"
+    echo "  -d, --days     Number of days ago to start from (default: 7)"
     echo "  -o, --output   Output file name (default: git_weekly_report.txt)"
     echo "  -h, --help     Show this help message"
     exit 1
 }
 
 # Default values
-weeks_ago=1
+days_ago=7
 output_file="git_weekly_report.txt"
 
 # Parse command line arguments using getopt
-TEMP=$(getopt -o w:o:h --long weeks:,output:,help -n 'git-weekly-report' -- "$@")
+TEMP=$(getopt -o d:o:h --long days:,output:,help -n 'git-weekly-report' -- "$@")
 if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
 
 eval set -- "$TEMP"
 
 while true; do
     case "$1" in
-        -w|--weeks)
-            weeks_ago="$2"
+        -d|--days)
+            days_ago="$2"
             shift 2
             ;;
         -o|--output)
@@ -44,15 +44,15 @@ while true; do
     esac
 done
 
-# Validate weeks_ago is a positive number
-if ! [[ "$weeks_ago" =~ ^[0-9]+$ ]] || [ "$weeks_ago" -eq 0 ]; then
-    echo "Error: Weeks must be a positive number"
+# Validate days_ago is a non-negative number
+if ! [[ "$days_ago" =~ ^[0-9]+$ ]]; then
+    echo "Error: Days must be a non-negative number"
     exit 1
 fi
 
 # Calculate dates
-end_date=$(date -d "last sunday" +%Y-%m-%d)
-start_date=$(date -d "last sunday -$weeks_ago week" +%Y-%m-%d)
+end_date=$(date +%Y-%m-%d)
+start_date=$(date -d "$days_ago days ago" +%Y-%m-%d)
 
 # Create or clear the output file
 echo "Git Activity Report from $start_date to $end_date" > "$output_file"
