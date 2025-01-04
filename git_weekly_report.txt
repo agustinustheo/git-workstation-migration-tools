@@ -14,5 +14,5 @@ Added: 230, Deleted: 0
 
 Overall Statistics
 =================
-Total commits:        6
+Total commits:        8
 Total authors:        4
