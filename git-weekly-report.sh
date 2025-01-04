@@ -52,7 +52,7 @@ fi
 
 # Calculate dates
 end_date=$(date +%Y-%m-%d)
-start_date=$(date -d "$days_ago days ago" +%Y-%m-%d)
+start_date=$(date -v-${days_ago}d +%Y-%m-%d)
 
 # Create or clear the output file
 echo "Git Activity Report from $start_date to $end_date" > "$output_file"
